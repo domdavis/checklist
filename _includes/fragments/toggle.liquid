@@ -1,0 +1,9 @@
+<label>
+  <input type="checkbox" data-toggle="toggle"
+         data-size="xs" data-width="110" data-onstyle="success"
+         data-on="{{ action.check }}"
+         data-off="{{ action.check }}"
+         data-offstyle="secondary"
+         {% if action.id %}id="{{ action.id }}"{% endif %}
+  >
+</label>

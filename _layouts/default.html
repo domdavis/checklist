@@ -1,12 +1,8 @@
 <!doctype html>
 <html lang="en">
-{% include head.liquid %}
+{% include fragments/head.liquid %}
 
 <body>
-{% if page.use %}
-  {% include {{ page.use }} %}
-{% else %}
-  {% include 404.html %}
-{% endif %}
+{% include pages/{{page.name}}.liquid %}
 </body>
 </html>

@@ -1,0 +1,23 @@
+<div class="col-3">
+  {{ action.name }}
+</div>
+<div class="col-2 text-center">
+  {% if action.check %}
+    {% include fragments/toggle.liquid %}
+  {% endif %}
+  {% if action.label %}
+    <small class="badge badge-pill badge-info">
+      {{ action.label }}
+    </small>
+  {% endif %}
+</div>
+<div class="col-7">
+  {% if action.notes %}
+    <small {% if action.id %}id="{{ action.id }}-notes"{% endif %}>
+        {{ action.notes }}
+    </small>
+  {% endif %}
+  {% if action.note %}
+    {% include fragments/note.liquid %}
+  {% endif %}
+</div>
