@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="card mt-3">
+    <div class="card-header">
+
+      <h1 class="text-center mt-3">A320neo Checklist</h1>
+    </div>
+    <div class="row m-0">
+      <div class="col-2 bg-light border-right">
+        <div class="nav flex-column nav-pills pt-3 pb-3" role="tablist">
+          {% for section in site.data.checks %}
+            <a class="nav-link {{ section.class }}"
+               data-toggle="list" href="#{{ section.id }}"
+               role="tab">{{ section.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="tab-content">
+          {% for section in site.data.checks %}
+
+            <div class="tab-pane pt-3 {{section.class}}" id="{{ section.id }}"
+                 role="tabpanel">
+              {% for action in section.actions %}
+                <div class="row pb-2">
+                  <div class="col-3">
+                    {{ action.name }}
+                  </div>
+                  <div class="col-2">
+                    <label>
+                      <input type="checkbox" data-toggle="toggle"
+                             data-size="xs" data-width="110" data-onstyle="success"
+                             data-on="{{ action.check }}"
+                             data-off="{{ action.check }}"
+                             data-offstyle="secondary"
+                             {% if action.id %}id="{{ action.id }}"{% endif %}
+                      >
+                    </label>
+                  </div>
+                  <div class="col">
+                    {{ action.notes }}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-muted text-center">
+      For sim use only (because who has access to a real A320neo but not the
+      proper checklists?).<br/>
+      Absolutely no guarantee that these checks are even
+      remotely correct. I am not a pilot.
+    </div>
+  </div>
+</div>
