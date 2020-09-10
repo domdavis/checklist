@@ -1,0 +1,70 @@
+{% if aircraft.integrations.fsuipc %}
+  <div class="col-3">
+    FSUIPC
+  </div>
+  <div class="col-2 text-center">
+    <label>
+      <input type="checkbox" data-toggle="toggle"
+             data-size="xs" data-width="110" data-onstyle="success"
+             data-on="AS REQ" data-off="AS REQ" data-offstyle="secondary">
+    </label>
+  </div>
+  <div class="col-7">
+  </div>
+{% endif %}
+{% if aircraft.integrations.xpuipc %}
+  <div class="col-3">
+    XPUIPC
+  </div>
+  <div class="col-2 text-center">
+    <label>
+      <input type="checkbox" data-toggle="toggle"
+             data-size="xs" data-width="110" data-onstyle="success"
+             data-on="AS REQ" data-off="AS REQ" data-offstyle="secondary">
+    </label>
+  </div>
+  <div class="col-7">
+  </div>
+{% endif %}
+{% if aircraft.integrations.slc %}
+  <div class="col-3">
+    Self Loading Cargo
+  </div>
+  <div class="col-2 text-center">
+    <label>
+      <input type="checkbox" data-toggle="toggle"
+             data-size="xs" data-width="110" data-onstyle="success"
+             data-on="AS REQ" data-off="AS REQ" data-offstyle="secondary">
+    </label>
+  </div>
+  <div class="col-7">
+    <small>If SLC isn't being used checks involving it can be ignored</small>
+  </div>
+{% endif %}
+{% if aircraft.integrations.simbrief %}
+  <script src="/js/simbrief.js"></script>
+
+  <div class="p-3 m-3 border-left border-success">
+    Enter your SimBrief username here to utilise data from your current flight
+    plan. The flight plan will be pulled when it is marked as
+    <small class="badge badge-pill badge-success">FILED</small> on the relevant
+    checklist.
+  </div>
+  <div class="col-3">
+    SimBrief Username
+  </div>
+  <div class="col-2 text-center">
+    <small class="badge badge-pill badge-success">AS REQ</small>
+  </div>
+  <div class="col-7">
+    <div class="input-group input-group-sm mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="userid-label">User</span>
+      </div>
+      <input type="text" class="form-control"
+             placeholder="SimBrief Username"
+             aria-label="SimBrief Username"
+             aria-describedby="userid-label" id="userid">
+    </div>
+  </div>
+{% endif %}
