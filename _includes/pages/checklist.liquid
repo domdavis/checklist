@@ -1,13 +1,17 @@
+{% include fragments/scripts.liquid %}
+{% assign simulator = site.data[page.simulator] %}
+{% assign aircraft = simulator[page.aircraft] %}
+
 <div class="container">
   <div class="card mt-3">
     <div class="card-header">
-
-      <h1 class="text-center mt-3">A320neo Checklist</h1>
+      <h1 class="text-center mt-3">{{ aircraft.name }} Checklist</h1>
+      <h2 class="text-center">For {{  simulator.meta.name }}</h2>
     </div>
     <div class="row m-0">
       <div class="col-2 bg-light border-right">
         <div class="nav flex-column nav-pills pt-3 pb-3" role="tablist">
-          {% for section in site.data.checks %}
+          {% for section in aircraft.sections %}
             <a class="nav-link {{ section.class }}"
                data-toggle="list" href="#{{ section.id }}"
                role="tab">{{ section.name }}</a>
@@ -17,7 +21,7 @@
 
       <div class="col">
         <div class="tab-content">
-          {% for section in site.data.checks %}
+          {% for section in aircraft.sections %}
 
             <div class="tab-pane pt-3 {{ section.class }}" id="{{ section.id }}"
                  role="tabpanel">
@@ -33,15 +37,7 @@
       </div>
     </div>
     <div class="card-footer text-muted text-center">
-      <small>
-        For sim use only (because who has access to a real A320neo but not the
-        proper checklists?).
-      </small>
-      <br/>
-      <small>
-        Absolutely no guarantee that these checks are even remotely correct. I
-        am not a pilot.
-      </small>
+      {%  include fragments/disclaimer.liquid %}
     </div>
   </div>
 </div>

@@ -3,6 +3,10 @@
 {% include fragments/head.liquid %}
 
 <body>
-{% include pages/{{page.name}}.liquid %}
+{% if page.template %}
+  {% include pages/{{page.template}}.liquid %}
+{% else %}
+  {% include pages/404.liquid %}
+{% endif %}
 </body>
 </html>
