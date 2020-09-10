@@ -8,7 +8,7 @@ $(document).ready(function () {
     const toggle = new Toggle('brief')
 
     if (!userid) {
-      toggle.color('btn-primary')
+      toggle.colour('btn-primary')
       return
     }
 

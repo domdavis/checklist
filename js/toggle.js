@@ -11,7 +11,7 @@ Toggle.prototype.label = function(text) {
   this.labels.last().text(text)
 }
 
-Toggle.prototype.colour = function(item, colour) {
+Toggle.prototype.colour = function(colour) {
   this.labels.first().removeClass('btn-success')
   this.labels.first().addClass(colour)
 }
