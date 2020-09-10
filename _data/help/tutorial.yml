@@ -1,0 +1,45 @@
+name: "Tutorial"
+sections:
+  - name: "Welcome"
+    id: "welcome"
+    class: "active"
+    actions:
+    - memo: >-
+        This page allows you to learn a little about how the checklists work.
+        Most checks are handled with a slider. A checked slider will usually go
+        green.
+    - name: "Click Slider"
+      check: "CLICKED"
+      notes: "Click the slider to mark the item as checked"
+    - memo: >-
+        Some checks may try to use external data. If this is unavailable then
+        the slider will turn blue when checked. All this means is some later
+        checks may require more manual components and calculations.
+    - name: "Click Slider"
+      check: "CLICKED"
+      id: "blue"
+    - memo: >-
+        If there is an error when retrieving external data the slider will turn
+        yellow when checked. All this means is some later checks may require
+        more manual components and calculations.
+    - name: "Click Slider"
+      check: "CLICKED"
+      id: "yellow"
+    - memo: >-
+        Sometimes information needs to be recorded for later use. The below is
+        an example and can be ignored.
+    - name: "Notes"
+      label: "AS REQ"
+      input:
+        id: "temp"
+        label: "Note"
+        placeholder: "Data being noted"
+  - name: "More Checks"
+    id: "more"
+    actions:
+      - memo: >-
+          Checks are split into logical groups to allow you to complete each set
+          of checks before moving on. This tutorial only has two sets of checks.
+          Congratulations, you are now done!
+      - name: "Tutorial"
+        check: "FINISHED"

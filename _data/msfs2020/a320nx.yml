@@ -1,19 +1,44 @@
 name: "A320neo (A32NX Project)"
 sections:
-  - name: "Pre-Flight"
-    id: "pre-flight"
+  - name: "Setup"
+    id: "setup"
     class: "active"
     actions:
+    - memo: >-
+        This setup page allows you to do some initial config and explains a
+        little about how the checklists work. Most checks are handled with a
+        slider. A checked slider will usually go green. It will go blue if the
+        check is being handled without importing external data, or yellow if
+        there was a problem importing external data. Blue/Yellow checks mean
+        some manual calculations may need to be done later.
+    - name: "Slider"
+      check: "SET"
+      notes: "Click the slider to mark the item as checked"
+    - memo: >-
+        Sometimes information needs to be recorded for later use. The below is
+        an example and can be ignored.
+    - name: "Notes"
+      label: "AS REQ"
+      input:
+        id: "temp"
+        label: "Note"
+        placeholder: "Data being noted"
+    - memo: >-
+        Setting a SimBrief user will allow your latest flight plan to be
+        pulled once it's checked as "FILED". It's not required but allows some
+        checks to provide calculated data.
     - name: "SimBrief"
-      label: "Optional"
-      note:
+      label: "AS REQ"
+      input:
         id: "userid"
         label: "User"
         placeholder: "SimBrief User"
+  - name: "Pre-Flight"
+    id: "pre-flight"
+    actions:
     - name: "Flight Plan"
       check: "FILED"
       id: "brief"
-      notes: "Set SimBrief user to import"
     - name: "Fuel"
       check: "CALC"
       id: "fuel"
@@ -31,7 +56,7 @@ sections:
       notes: "PAX * 55, split as needed"
     - name: "Centre of Gravity"
       label: "Note Here"
-      note:
+      input:
         id: "cog"
         label: "ZFWCG"
         placeholder: "25.00"
@@ -88,7 +113,7 @@ sections:
         check: "GRND FREQ"
       - name: "Ramp/Gate"
         check: "REQUESTED"
-        note: "Ramps disconnect automatically after a set time"
+        input: "Ramps disconnect automatically after a set time"
       - name: "Baggage"
         check: "REQUESTED"
       - name: "Catering"

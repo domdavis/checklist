@@ -1,4 +1,4 @@
-$(document).ready(function () {
+jQuery(document).ready(function () {
   $('#brief').change(function () {
     if (!$(this).prop('checked')) {
       return
@@ -8,7 +8,7 @@ $(document).ready(function () {
     const toggle = new Toggle('brief')
 
     if (!userid) {
-      toggle.color('btn-primary')
+      toggle.colour('btn-primary')
       return
     }
 
