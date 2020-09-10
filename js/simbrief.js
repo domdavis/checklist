@@ -1,14 +1,12 @@
-jQuery(document).ready(function () {
-  $('#brief').change(function () {
-    if (!$(this).prop('checked')) {
-      return
-    }
 
+jQuery(document).ready(function () {
+  let briefing = {}
+
+  $('#fetch').click(function () {
     const userid = $('#userid').val()
-    const toggle = new Toggle('brief')
 
     if (!userid) {
-      toggle.colour('btn-primary')
+      notesFor('fetch', 'No user set!')
       return
     }
 
@@ -16,11 +14,16 @@ jQuery(document).ready(function () {
     const url = base + `?username=` + userid + `&json=1`
 
     $.getJSON(url).done(function (data) {
-      toggle.colour('btn-success')
-      update(new Briefing(data))
+      briefing = new Briefing(data)
+      notesFor('fetch', 'Flight plan ('+ briefing.origin + '/' + briefing.destination+ ') loaded successfully')
+      update(briefing)
     }).fail(function () {
-      toggle.colour('btn-warning')
+      notesFor('fetch', 'Failed to load flight plan!')
     })
+  })
+
+  $('.scratch').change(function() {
+    update(briefing)
   })
 })
 
