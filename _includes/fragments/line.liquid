@@ -1,0 +1,29 @@
+{% if action.memo %}
+    <div class="p-3 m-3 border-left border-success">
+        {{ action.memo }}
+    </div>
+{%  else %}
+    <div class="col-3">
+        {{ action.name }}
+    </div>
+    <div class="col-2 text-center">
+        {% if action.check %}
+            {% include fragments/toggle.liquid %}
+        {% endif %}
+        {% if action.label %}
+            <small class="badge badge-pill badge-success">
+                {{ action.label }}
+            </small>
+        {% endif %}
+    </div>
+    <div class="col-7">
+        {% if action.notes %}
+            <small {% if action.id %}id="{{ action.id }}-notes"{% endif %}>
+                {{ action.notes }}
+            </small>
+        {% endif %}
+        {% if action.input %}
+            {% include fragments/input.liquid %}
+        {% endif %}
+    </div>
+{% endif %}

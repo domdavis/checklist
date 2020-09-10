@@ -6,14 +6,17 @@ sections:
     actions:
     - name: "SimBrief"
       label: "Optional"
-      note:
+      input:
         id: "userid"
         label: "User"
         placeholder: "SimBrief User"
+    - memo: >-
+        Setting a SimBrief user will cause the Checklist the pull the latest
+        flight plan for that user and populate certain values. It's not
+        required, but can make life easier.
     - name: "Flight Plan"
       check: "FILED"
       id: "brief"
-      notes: "Set SimBrief user to import"
     - name: "Fuel"
       check: "CALC"
       id: "fuel"
@@ -31,7 +34,7 @@ sections:
       notes: "PAX * 55, split as needed"
     - name: "Centre of Gravity"
       label: "Note Here"
-      note:
+      input:
         id: "cog"
         label: "ZFWCG"
         placeholder: "25.00"
@@ -88,7 +91,7 @@ sections:
         check: "GRND FREQ"
       - name: "Ramp/Gate"
         check: "REQUESTED"
-        note: "Ramps disconnect automatically after a set time"
+        input: "Ramps disconnect automatically after a set time"
       - name: "Baggage"
         check: "REQUESTED"
       - name: "Catering"
