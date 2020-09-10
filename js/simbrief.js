@@ -1,4 +1,4 @@
-$(document).ready(function () {
+jQuery(document).ready(function () {
   $('#brief').change(function () {
     if (!$(this).prop('checked')) {
       return
