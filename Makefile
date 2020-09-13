@@ -1,2 +1,2 @@
 serve:
-	bundle exec jekyll serve --livereload -b /config
+	bundle exec jekyll serve --livereload -b /checklist
