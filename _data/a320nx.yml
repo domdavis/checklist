@@ -112,7 +112,7 @@
         calculated.<hr/>
         ZFW can be calculated at
         <code>(44,330 + (PAX * 105) + Cargo)/1000</code> to 1 decimal place.
-    - check: { name: "BLOCK", label: "SET", id block }
+    - check: { name: "BLOCK", label: "SET", id: block }
       tip: Check units. Value is in metrics tonnes.
     - delimiter: "PERF"
     - ceck: { name: "THR RED/ACC", label: "REVIEW" }
