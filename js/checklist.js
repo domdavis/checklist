@@ -80,6 +80,16 @@ const update = () => {
     cog = '/' + zfw
   }
 
+  const oat = number($('#oat').val())
+  const isa = briefing.number('general', 'avg_temp_dev')
+  const elevation = briefing.number('origin', 'elevation')
+
+  let flex
+
+  if (oat && elevation) {
+    flex = Math.floor(((elevation/1000) * 1.98) + isa + oat)
+  }
+
   hint('fuel', measurement(lbs, briefing.number('fuel', 'plan_ramp'),
     briefing.string('params', 'units')))
   hint('business-weight', measurement(lbs, business * pax.weight))
@@ -95,18 +105,5 @@ const update = () => {
   hint('cog', cog)
   hint('block', convert(tonnes, briefing.number('fuel', 'plan_ramp'),
     briefing.string('params', 'units')))
-  hint('flex', "TODO")
-}
-
-// ------
-
-const flex = (isa, elevation, oat) => {
-  if (elevation === '' || oat === '' || isNaN(elevation) || isNaN(oat)) {
-    return ''
-  }
-
-  isa=parseFloat(isa)
-  oat=parseFloat(oat)
-
-  return 'AS REQ(' + Math.floor(((elevation/1000) * 1.98) + isa + oat) + ')'
+  hint('flex', flex)
 }
