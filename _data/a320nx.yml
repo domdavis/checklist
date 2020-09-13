@@ -49,8 +49,6 @@
       requires: slc
 - name: "Pre-Boarding"
   steps:
-    - check: { name: "Radio", label: "GRND FREQ" }
-      tip: Check <code>Comm</code> window for frequency
     - check: { name: "Ramp/Jet Bridge", label: "REQUESTED" }
       tip: >-
         Doors cause an erroneous <code>Master Warn</code>. This can be ignored.
@@ -149,8 +147,7 @@
     - input: { name: "Departure Freq", id: freq }
     - input: { name: "Squawk", id: squawk }
     - check: { name: "Departure", label: "REVIEW", id: departure }
-    - check: { name: "Autopilot", label: "ALT SET", id: ap-alt }
-    - check: { name: "Autopilot", label: "CRS SET", id: ap-crs }
+    - check: { name: "Autopilot CRS/ALT", label: "SET", id: autopilot }
     - check: { name: "Transponder", label: "SET", id: transponder }
     - delimiter: Boarding Complete
       requires: slc

@@ -70,16 +70,7 @@ const update = () => {
   const zfw = convert(tonnes, briefing.number('weights', 'est_zfw'),
     briefing.string('params', 'units'))
 
-  let cog
-
-  if (zfwcg && zfw) {
-    cog = zfwcg + '/' + zfw
-  } else if (zfwcg && !zfw) {
-    cog = zfwcg + '/'
-  } else if (!zfwcg && zfw) {
-    cog = '/' + zfw
-  }
-
+  const cog = optionalPair(zfwcg, zfw)
   const oat = number($('#oat').val())
   const isa = briefing.number('general', 'avg_temp_dev')
   const elevation = briefing.number('origin', 'elevation')
@@ -87,8 +78,11 @@ const update = () => {
   let flex
 
   if (oat && elevation) {
-    flex = Math.floor(((elevation/1000) * 1.98) + isa + oat)
+    flex = Math.floor(((elevation / 1000) * 1.98) + isa + oat)
   }
+
+  const runway = briefing.string('origin', 'plan_rwy')
+  const departure = $('#rwy').val()
 
   hint('fuel', measurement(lbs, briefing.number('fuel', 'plan_ramp'),
     briefing.string('params', 'units')))
@@ -100,10 +94,34 @@ const update = () => {
   hint('to-from', join(briefing.string('origin', 'icao_code'), '/',
     briefing.string('destination', 'icao_code')))
   hint('crz', join(briefing.string('atc', 'initial_alt'), '/'))
-  hint('runway', join('RWY ', briefing.string('origin', 'plan_rwy')))
+  hint('runway', join('RWY ', runway))
   hint('route', briefing.string('general', 'route'))
   hint('cog', cog)
   hint('block', convert(tonnes, briefing.number('fuel', 'plan_ramp'),
     briefing.string('params', 'units')))
   hint('flex', flex)
+  hint('autopilot', optionalPair($('#crs').val(), $('#alt').val()) )
+
+  if (runway && departure && runway !== departure) {
+    hint('departure', join('Flight plan (', runway,
+      ') does not match departure (', departure, ')'))
+  }
+
+  hint('transponder', $('#squawk').val())
+  hint('radio', $('#tower').val())
+  hint('standby', $('#freq').val())
+}
+
+const optionalPair = (a, b) => {
+  let str
+
+  if (a && b) {
+    str = a + '/' + b
+  } else if (a && !b) {
+    str = a + '/'
+  } else if (!a && b) {
+    str = '/' + b
+  }
+
+  return str
 }
