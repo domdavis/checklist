@@ -1,3 +1,5 @@
+const root = "/config"
+
 document.addEventListener('touchstart', function () {}, true)
 
 $(function () {
