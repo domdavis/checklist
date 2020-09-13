@@ -6,6 +6,7 @@
         Ideally we'd do this in the cockpit after requesting the fuel truck,
         but the ZFWCG value is only presented when configuring a flight. Make
         sure the input units match the units set in the simulator.
+    - intput: { name: "Fuel Loaded", id: fuel-loaded }
     - input: { name: "Business Class Pax", id: business-pax }
     - check: { name: "Business Class", label: "SET", id: business-weight }
       tip: >-
@@ -22,8 +23,9 @@
       tip: >-
         This figure can be obtained from the <code>Weight and Balance</code>
         screen when setting up the flight.
-    - check: { name: "ATC Call Sign", label: "SET", id: callsign }
     - check: { name: "Aircraft Tail Number", label: "SET", id: fin }
+    - check: { name: "ATC Call Sign", label: "SET", id: callsign }
+    - chexk: { name: "Flight number", label: "SET", id: flight }
 
 - name: "Pre-Start"
   steps:
@@ -91,7 +93,7 @@
       tip: >-
         <code>COST INDEX</code> accepts <code>1-300</code>,
         standard is <code>30</code>.
-    - check: { name: "CRZ FL/TEMP", "SET", id: crz }
+    - check: { name: "CRZ FL/TEMP", label: "SET", id: crz }
       tip: >-
         Temperature should be set automatically, but can be worked out as
         roughly <code>-10C</code> per <code>5000ft<code>.
@@ -104,7 +106,7 @@
       comment: <code>2090m</code> at sea level. Adjust upwards as required.
     - check: { name: "Route", label: "SET", id: route }
     - delimiter: "INIT B"
-    - check: { name: "ZFWCG/ZFW", label: "SET", id: cog }
+    - check: { name: "ZFW/ZFWCG", label: "SET", id: cog }
       tip: >-
         Default ZFWCG is 25, but 30 may be a better value if one hasn't been
         calculated.<hr/>
@@ -113,7 +115,7 @@
     - check: { name: "BLOCK", label: "SET", id: block }
       tip: Check units. Value is in metrics tonnes.
     - delimiter: "PERF"
-    - ceck: { name: "THR RED/ACC", label: "REVIEW" }
+    - check: { name: "THR RED/ACC", label: "REVIEW" }
       tip: >-
         Typically 1500/1500. <code>THR RED</code> is where thrust is moved to
         to <code>CLB</code>. <code>ACC</code> may be higher when noise abatement
@@ -147,12 +149,16 @@
     - input: { name: "Departure Freq", id: freq }
     - input: { name: "Squawk", id: squawk }
     - check: { name: "Departure", label: "REVIEW", id: departure }
-    - check: { name: "Autopilot CRS/ALT", label: "SET", id: autopilot }
+    - input: { name: "CRS", id: departure-crs }
+    - check: { name: "Autopilot HDG/ALT", label: "SET", id: autopilot }
     - check: { name: "Transponder", label: "SET", id: transponder }
     - delimiter: Boarding Complete
-      requires: slc
     - check: { name: "Doors", label: "CLOSED" }
       tip: If using SLC make sure the doors are closed here too
+      requires: slc
+    - check: { name: "Ramp/Jet Bridge", label: "REMOVED" }
+    - check: { name: "Welcome Aboard Announcement", label: "MADE" }
+      requires: slc
     - check: { name: "Strobe Light", label: "AUTO" }
     - check: { name: "Beacon", label: "ON" }
     - check: { name: "Nav Lights", label: "ON" }
@@ -169,6 +175,9 @@
     - check: { name: "Auto-brake", label: "MAX" }
 - name: "Startup"
   steps:
+    - check: { name: "Doors", "label": "ARMED"}
+      comment: TODO Do we need to push back first?
+      requires: slc
     - check: { name: "Thrust Levers", label: "IDLE" }
     - check: { name: "Outside area", label: "CLEAR" }
     - check: { name: "Taxi Clearance", label: "GRANTED" }
@@ -183,34 +192,35 @@
         with engine startup.
     - check: { name: "Engine Mode Selector", label: "IGN/START" }
     - check: { name: "Outboard Engine", label: "START" }
-      comment: Wait for <code>N1=20%</code>
+      delimiter: "Outboard Engine: N1=20%"
     - check: { name: "Inboard Engine", label: "START" }
-      comment: Wait for <code>N1=20%</code>
-    - check: { name: "APU Bleed", "OFF" }
-    - check: { name: "APU Master", "OFF" }
+      delimiter: "Inboard Engine: N1=20%"
+    - check: { name: "Engine Mode Selector", label: "NORM" }
+    - check: { name: "APU Bleed", label: "OFF" }
+    - check: { name: "APU Master", label: "OFF" }
       comment: Check <code>GRND PWR</code> is <code>OFF</code> too
-    - check: { name: "Overhead Panel", "NO LIGHTS" }
+    - check: { name: "Overhead Panel", label: "NO LIGHTS" }
 - name: "Taxi"
   steps:
-    - check: { name: "Brakes", label: "RELEASED"}
+    - check: { name: "Brakes", label: "RELEASED" }
     - delimiter: Taxi to assigned runway
-    - check: { name: "Crew", label: "SEATED"}
+    - check: { name: "Crew", label: "SEATED" }
     - delimiter: At runway threshold
-    - check: { name: "Flaps", label: "SET"}
+    - check: { name: "Flaps", label: "SET" }
       comment: Must match what was set in the <code>FMC</code>
     - check: { name: "Spoilers", label: "RETRACTED" }
-    - check: { name: "Landing Lights", label: "ON"}
+    - check: { name: "Landing Lights", label: "ON" }
     - check: { name: "Dome Light", label: "OFF/DIM" }
       tip: >-
         Type guidance for the A320 states dome light to <code>DIM</code> in poor
         lighting conditions.
     - check: { name: "Console Floodlight", label: "OFF" }
     - check: { name: "Radio", label: "TOWER", id: radio }
-    - check: { name: "Radio Standby", label: "DEPARTURE", id: standby}
-    - check: {name: "Takeoff Clearance", label: "GRANTED"}
+    - check: { name: "Radio Standby", label: "DEPARTURE", id: standby }
+    - check: { name: "Takeoff Clearance", label: "GRANTED" }
 - name: "Takeoff"
   steps:
-    - check: {name: "Brakes", label: "SET"}
+    - check: { name: "Brakes", label: "SET" }
     - memo: >-
         Thrust <code>40% N1</code>, followed by <code>FLEX/MCT</code> or
         <code>TOGA</code>. <br/>
@@ -218,21 +228,35 @@
         At <code>Vr</code> pitch <code>10-15deg</code>. <br>
         Positive Climb Rate touch brakes.
     - delimiter: Positive Rate
-    - check: { name: "Gear", label: "RETRACT"}
+    - check: { name: "Gear", label: "RETRACT" }
     - delimiter: 180 KIAS
-    - check: { name: "FLAPS 1", label: "SET"}
+    - check: { name: "Flaps", label: "FLAPS 1" }
     - delimiter: 210 KIAS
-    - check: { name: "FLAPS", label: "RETRACTED"}
-    - check: { name: "Auto-throttle", label: "SET"}
-    - check: { name: "Autopilot", label: "SET"}
-    - check: { name: "Auto-brake", label: "OFF"}
-    - check: { name: "Note Lights", label: "OFF"}
-    - check: { name: "Landing Lights", label: "OFF"}
+    - check: { name: "Flaps", label: "RETRACTED" }
+    - delimiter: LVR CLB
+    - check: { name: "Throttle", label: "CLB" }
+    - check: { name: "Auto-throttle", label: "SET" }
+    - check: { name: "Autopilot", label: "SET" }
+    - check: { name: "Auto-brake", label: "OFF" }
+    - check: { name: "Nose Lights", label: "OFF" }
+    - check: { name: "Landing Lights", label: "OFF" }
       comment: <code>OFF</code> and <code>RETRACTED</code>
-    - check: {name: "Runway Turn Lights", label: "OFF"}
+    - check: { name: "Runway Turn Lights", label: "OFF" }
     - delimiter: 1000ft or AS REQ
-    - check: {name: "Seatbelts Indicator", label: "OFF"}
+    - check: { name: "Seatbelts Indicator", label: "OFF" }
+    - input: { name: "DEP" }
 - name: Cruise
   steps:
+    - check: { name: "Cruise Altitude", label: "REQUESTED", id: cruise}
+      tip: >-
+        ATC can be a bit useless when it comes to getting you to altitude. You
+        can force the issue and just request your cruise altitude with a few
+        radio calls.
     - delimiter: FL180
-    - check: {name: Altimiter, label: "STD"}
+    - check: { name: Altimiter, label: "STD" }
+    - delimiter: Cruise Altitude
+    - check: { name: "Announcement", label: "MADE" }
+    - requires: slc
+    - delimiter: ATC Scratchpad
+    - input: { name: "ATC" }
+      tip: Use this space to make notes of ATC instructions mid flight

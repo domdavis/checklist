@@ -70,7 +70,6 @@ const update = () => {
   const zfw = convert(tonnes, briefing.number('weights', 'est_zfw'),
     briefing.string('params', 'units'))
 
-  const cog = optionalPair(zfwcg, zfw)
   const oat = number($('#oat').val())
   const isa = briefing.number('general', 'avg_temp_dev')
   const elevation = briefing.number('origin', 'elevation')
@@ -84,23 +83,34 @@ const update = () => {
   const runway = briefing.string('origin', 'plan_rwy')
   const departure = $('#rwy').val()
 
+  const course = $('#departure-crs')
+
+  if (!course.val()) {
+    course.val($('#crs').val())
+  }
+
   hint('fuel', measurement(lbs, briefing.number('fuel', 'plan_ramp'),
     briefing.string('params', 'units')))
   hint('business-weight', measurement(lbs, business * pax.weight))
   hint('economy-weight', measurement(lbs, economy * pax.weight))
   hint('cargo', measurement(lbs, (business + economy) * pax.luggage))
-  hint('callsign', briefing.string('atc', 'callsign'))
+  hint('callsign', briefing.string('general', 'icao_airline'))
+  hint('flight', briefing.string('general', 'flight_number'))
   hint('fin', briefing.string('api_params', 'fin'))
   hint('to-from', join(briefing.string('origin', 'icao_code'), '/',
     briefing.string('destination', 'icao_code')))
+  hint('flight-number', briefing.string('general', 'flight_number'))
   hint('crz', join(briefing.string('atc', 'initial_alt'), '/'))
   hint('runway', join('RWY ', runway))
-  hint('route', briefing.string('general', 'route'))
-  hint('cog', cog)
-  hint('block', convert(tonnes, briefing.number('fuel', 'plan_ramp'),
+  hint('route', join(briefing.string('origin', 'icao_code'), '/', runway,
+    ' ', briefing.string('general', 'route'), ' ',
+    briefing.string('destination', 'icao_code'), '/',
+    briefing.string('destination', 'plan_rwy')))
+  hint('cog', optionalPair(zfw, zfwcg))
+  hint('block', convert(tonnes, $('#fuel-loaded').val(),
     briefing.string('params', 'units')))
   hint('flex', flex)
-  hint('autopilot', optionalPair($('#crs').val(), $('#alt').val()) )
+  hint('autopilot', optionalPair(course.val(), $('#alt').val()) )
 
   if (runway && departure && runway !== departure) {
     hint('departure', join('Flight plan (', runway,
