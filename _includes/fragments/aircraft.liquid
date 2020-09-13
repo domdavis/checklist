@@ -1,0 +1,16 @@
+<div class="row p-0 m-0 d-flex align-items-center">
+  <div class="col-6 mb-0">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="aircraft">Aircraft</label>
+      </div>
+      <select class="custom-select" id="aircraft">
+        {% for aircraft in site.data.setup.aircraft %}
+          <option value="{{ aircraft.id }}">{{ aircraft.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  {% include fragments/comments.liquid notes=include.notes tip=inclide.tip
+      id = "aircraft" %}
+</div>

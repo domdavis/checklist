@@ -1,0 +1,25 @@
+<div class="row m-0">
+  <div class="col-2 bg-light border-right">
+    <div class="nav flex-column nav-pills pt-3 pb-3" role="tablist">
+      <a class="nav-link active" data-toggle="list" role="tab"
+         href="#setup">Setup</a>
+      <a class="nav-link" data-toggle="list" role="tab"
+         href="#help">Help</a>
+    </div>
+  </div>
+  <div class="col">
+    <div class="tab-content mt-3">
+      <div class="tab-pane active" id="setup" role="tabpanel">
+        <form>
+          <div class="form-group">
+            {% include fragments/aircraft.liquid %}
+            {% include components/checklist.liquid steps=site.data.setup.params %}
+            {% include components/next.liquid id="fly" name="Fly" %}
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane" id="help" role="tabpanel">
+      </div>
+    </div>
+  </div>
+</div>

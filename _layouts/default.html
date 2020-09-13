@@ -1,12 +1,28 @@
 <!doctype html>
 <html lang="en">
 {% include fragments/head.liquid %}
-
 <body>
-{% if page.template %}
-  {% include pages/{{page.template}}.liquid %}
-{% else %}
-  {% include pages/404.liquid %}
-{% endif %}
+<div class="container">
+  <div class="card mt-3">
+    <div class="card-header">
+      <h1 class="text-center">
+        {{ page.aircraft | default: "Simulator" }} Checklist
+      </h1>
+      {% if page.simulator %}
+      <h5 class="text-center">For {{page.simulator}}</h5>
+      {% endif %}
+    </div>
+    <div class="card-body m-0 p-0">
+      {% if page.template %}
+        {% include pages/{{page.template}}.liquid %}
+      {% else %}
+        {% include pages/404.liquid %}
+      {% endif %}
+    </div>
+    <div class="card-footer text-muted text-center">
+      {% include fragments/disclaimer.liquid %}
+    </div>
+  </div>
+</div>
 </body>
 </html>

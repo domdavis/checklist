@@ -1,0 +1,11 @@
+aircraft:
+  - { name: "A320neo (A320NX Project)", id: a320nx }
+  - { name: "A320neo (Default))", id: a320neo }
+params:
+  - check: {name: "FSUIPC/XPUIPC", label: "AS REQ", id: fsuipc}
+  - check: {name: "Self Loading Cargo", label: "AS REQ", id: slc }
+    comment: Requires FSUIPC/XPUIPC to be running
+  - input: {name: "SimBrief", placeholder: "username", id: simbrief}
+    tip: >-
+      You may optionally enter a SimBrief user to have your current flight plan
+      used to populate some of the checks.

@@ -1,100 +1,127 @@
-const lbs = "lbs"
-const kgs = "kgs"
-const tonnes = "t"
+const urlParams = new URLSearchParams(window.location.search)
 
-const defaults = {
-  businessClassPax: 10,
-  paxWeightLBS: 175,
-  luggageWeightLBS: 55
+function Briefing(data) {
+  this.data = data
 }
 
-const conversion = {
-  kgs: { lbs: 0.453592, t: 1000 },
-  lbs: { kgs: 2.20462, t: 2204.62 },
-  t: { kgs: 0.001, lbs: 0.000453592, precision: 1}
-
-
+Briefing.prototype.string = function() {
+  return Array.prototype.slice.apply(arguments).reduce((xs, x) =>
+    (xs && xs[x]) ? xs[x] : undefined, this.data)
 }
 
-const notesFor = (id, text) => {
-  $('#' + id + "-notes").html('<small>'+text+'</small>')
+Briefing.prototype.number = function() {
+  let val = Array.prototype.slice.apply(arguments).reduce((xs, x) =>
+    (xs && xs[x]) ? xs[x] : undefined, this.data)
+
+  if (val !== undefined) {
+    val = number(val)
+  }
+
+  return val
 }
 
-const textFor = (name, text) => {
-  if ( text === undefined || text === "") {
-    return
-  }
+let briefing = new Briefing()
 
-  const labels = $("label[for='" + name + "']")
-
-  labels.first().text(text)
-  labels.last().text(text)
-}
-
-const convert = (unit, value, units) => {
-  let scalar
-  let precision
-  let lookup = conversion[unit]
-
-  if (lookup) {
-    scalar = lookup[units]
-    precision = lookup.precision
-  }
-
-  if (!scalar) {
-    scalar = 1
-  }
-  if (!precision) {
-    precision = 0
-  }
-
-  value = value * scalar
-
-  if (value < 0) {
-    value = 0
-  }
-
-  if (isNaN(value)) {
-    return ''
-  }
-
-  return Number(value).toLocaleString(undefined,
-    {
-      maximumFractionDigits: precision,
-      minimumFractionDigits: precision,
-    })
-}
-
-const displayValue = (unit, value, units) => {
-  return convert(unit, value, units) + ' ' + unit
-}
-
-function join() {
-  let text = ""
-  Array.prototype.slice.apply(arguments).forEach(arg => {
-    if (arg !== undefined) {
-      text = text + arg
+$(function() {
+  $('[data-requires]').each(function() {
+    if (urlParams.get($(this).data('requires')) !== 'true') {
+      $(this).hide()
     }
   })
 
-  return text
+  const username = urlParams.get('simbrief')
+
+  if (username) {
+    const base = `https://www.simbrief.com/api/xml.fetcher.php`
+    const url = base + `?username=` + username + `&json=1`
+
+    $.getJSON(url).done(function(data) {
+      briefing = new Briefing(data)
+      hint('flight-plan', join('Loaded flight plan for ',
+        briefing.string('origin', 'icao_code'), '/',
+        briefing.string('destination', 'icao_code')))
+      $('#flight-plan').bootstrapToggle('on')
+      update()
+    }).fail(function() {
+      error('flight-plan', 'Failed to load flight plan!')
+    })
+  }
+
+  $('.scratch').on('change keypress paste input', update)
+})
+
+const update = () => {
+  const passengers = briefing.number('general', 'passengers')
+  const businessPax = $('#business-pax')
+  const economyPax = $('#economy-pax')
+
+  let business = number(businessPax.val())
+  let economy = number(economyPax.val())
+
+  if (passengers) {
+    business = business > passengers ? 0 : business
+    economy = passengers - business
+    economyPax.val(economy)
+    economyPax.prop('disabled', true)
+  }
+
+  const zfwcg = $('#zfwcg').val()
+
+  const zfw = convert(tonnes, briefing.number('weights', 'est_zfw'),
+    briefing.string('params', 'units'))
+
+  const cog = optionalPair(zfwcg, zfw)
+  const oat = number($('#oat').val())
+  const isa = briefing.number('general', 'avg_temp_dev')
+  const elevation = briefing.number('origin', 'elevation')
+
+  let flex
+
+  if (oat && elevation) {
+    flex = Math.floor(((elevation / 1000) * 1.98) + isa + oat)
+  }
+
+  const runway = briefing.string('origin', 'plan_rwy')
+  const departure = $('#rwy').val()
+
+  hint('fuel', measurement(lbs, briefing.number('fuel', 'plan_ramp'),
+    briefing.string('params', 'units')))
+  hint('business-weight', measurement(lbs, business * pax.weight))
+  hint('economy-weight', measurement(lbs, economy * pax.weight))
+  hint('cargo', measurement(lbs, (business + economy) * pax.luggage))
+  hint('callsign', briefing.string('atc', 'callsign'))
+  hint('fin', briefing.string('api_params', 'fin'))
+  hint('to-from', join(briefing.string('origin', 'icao_code'), '/',
+    briefing.string('destination', 'icao_code')))
+  hint('crz', join(briefing.string('atc', 'initial_alt'), '/'))
+  hint('runway', join('RWY ', runway))
+  hint('route', briefing.string('general', 'route'))
+  hint('cog', cog)
+  hint('block', convert(tonnes, briefing.number('fuel', 'plan_ramp'),
+    briefing.string('params', 'units')))
+  hint('flex', flex)
+  hint('autopilot', optionalPair($('#crs').val(), $('#alt').val()) )
+
+  if (runway && departure && runway !== departure) {
+    hint('departure', join('Flight plan (', runway,
+      ') does not match departure (', departure, ')'))
+  }
+
+  hint('transponder', $('#squawk').val())
+  hint('radio', $('#tower').val())
+  hint('standby', $('#freq').val())
 }
 
+const optionalPair = (a, b) => {
+  let str
 
-function Briefing(briefing) {
-  this.units = briefing['params']['units']
-  this.passenger_count = briefing['general']['passengers']
-  this.flight = briefing['general']['flight_number']
-  this.route = briefing['general']['route']
-  this.isa = briefing['general']['avg_temp_dev']
-  this.origin = briefing['origin']['icao_code']
-  this.elevation = briefing['origin']['elevation']
-  this.destination = briefing['destination']['icao_code']
-  this.block_fuel = briefing['fuel']['plan_ramp']
-  this.zfw = briefing['weights']['est_zfw']
+  if (a && b) {
+    str = a + '/' + b
+  } else if (a && !b) {
+    str = a + '/'
+  } else if (!a && b) {
+    str = '/' + b
+  }
+
+  return str
 }
-
-
-
-
-

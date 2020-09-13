@@ -1,0 +1,9 @@
+{%  comment %}
+Requires check and optional id
+{% endcomment %}
+<label class="pt-1">
+  <input type="checkbox" data-toggle="toggle" data-size="xs" data-width="115"
+         data-on="{{ include.check }}" data-off="{{ include.check }}"
+         data-onstyle="success" data-offstyle="secondary"
+         {% if include.id %}id="{{ include.id }}"{% endif %}>
+</label>

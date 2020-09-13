@@ -1,0 +1,16 @@
+{%  comment %}
+Requires id, label and optional placeholder
+{% endcomment %}
+<div class="input-group input-group-sm">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="{{ include.id }}-label">
+      {{ include.label }}
+    </span>
+  </div>
+  <input type="text" class="form-control scratch"
+      {% if include.placeholder %}
+        placeholder="{{ include.placeholder }}"
+        aria-label="{{ include.placeholder }}"
+      {% endif %}
+         aria-describedby="{{ include.id }}-label" id="{{ include.id }}">
+</div>
