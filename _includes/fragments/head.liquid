@@ -18,10 +18,13 @@
   <link rel="stylesheet"
         href="//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ site.root }}/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ site.root }}/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ site.root }}/favicon-16x16.png">
+  <link rel="manifest" href="{{ site.root }}/site.webmanifest">
 
 
   <!--[if lt IE 9]>
@@ -48,13 +51,13 @@
   <script
       src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 
-  <script src="/js/common.js"></script>
+  <script src="{{ site.root }}/js/common.js"></script>
 
   {% if page.logic %}
-    <script src="js/{{ page.logic }}.js"></script>
+    <script src="{{ site.root }}/js/{{ page.logic }}.js"></script>
   {% endif %}
 
   {% if page.checklist %}
-    <script src="js/checklist.js"></script>
+    <script src="{{ site.root }}/js/checklist.js"></script>
   {% endif %}
 </head>

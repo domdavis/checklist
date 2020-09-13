@@ -19,6 +19,6 @@ $(function () {
       }
     })
 
-    location.href = '/' + aircraft + "?" + $.param(params)
+    location.href = root + '/' + aircraft + "?" + $.param(params)
   })
 })
