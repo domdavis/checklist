@@ -1,0 +1,31 @@
+{%  comment %}
+Requires steps
+{% endcomment %}
+{% for step in include.steps %}
+  <div {% if step.requires %}data-requires="{{ step.requires }}"{% endif %}>
+    {% if step.delimiter %}
+      {% include components/delimiter.liquid text=step.delimiter style="m-1"%}
+    {% endif %}
+    {% if step.memo %}
+      {% include components/memo.liquid text=step.memo %}
+    {% endif %}
+    {% if step.check %}
+      {% include components/check.liquid
+          name=step.check.name
+          check=step.check.label
+          id=step.check.id
+          tip=step.tip
+          comment=step.comment
+      %}
+    {% endif %}
+    {% if step.input %}
+      {% include components/note.liquid
+          label=step.input.name
+          placeholder=step.input.placeholder
+          id=step.input.id
+          tip=step.tip
+          comment=step.comment
+      %}
+    {% endif %}
+  </div>
+{% endfor %}

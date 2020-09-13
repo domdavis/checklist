@@ -1,0 +1,9 @@
+{%  comment %}
+Requires text, optional styling
+{% endcomment %}
+<div class="d-flex justify-content-center w-100">
+  <small class="badge badge-pill badge-secondary
+    {{ include.style | default: "m-3" }}">
+    {{ include.text }}
+  </small>
+</div>

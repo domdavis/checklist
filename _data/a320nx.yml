@@ -1,0 +1,241 @@
+- name: "Pre-Flight"
+  steps:
+    - check: { name: "Flight Plan", label: "FILED", id: flight-plan }
+    - check: { name: "Fuel", label: "CALC", id: fuel }
+      tip: >-
+        Ideally we'd do this in the cockpit after requesting the fuel truck,
+        but the ZFWCG value is only presented when configuring a flight. Make
+        sure the input units match the units set in the simulator.
+    - input: { name: "Business Class Pax", id: business-pax }
+    - check: { name: "Business Class", label: "SET", id: business-weight }
+      tip: >-
+        Passenger weights can be calculated using <code>pax * 175 lbs</code>.
+    - input: { name: "Economy Class Pax", id: economy-pax }
+    - check: { name: "Economy Class", label: "SET", id: economy-weight }
+      tip: >-
+        Passenger weights can be calculated using <code>pax * 175 lbs</code>.
+    - check: { name: "Cargo", label: "SET", id: cargo }
+      tip: >-
+        Passenger baggage can be calculated using <code>pax * 55 lbs</code> and
+        distributed as needed for correct ZFWCG.
+    - input: { name: "ZFWCG", placeholder: "25.00", id: zfwcg }
+      tip: >-
+        This figure can be obtained from the <code>Weight and Balance</code>
+        screen when setting up the flight.
+    - check: { name: "ATC Call Sign", label: "SET", id: callsign }
+    - check: { name: "Aircraft Tail Number", label: "SET", id: fin }
+
+- name: "Pre-Start"
+  steps:
+    - check: { name: "Parking Brake", label: "SET" }
+    - check: { name: "Throttle", label: "IDLE" }
+    - check: { name: "Flaps", label: "UP" }
+    - check: { name: "Spoiler", label: "RET" }
+    - check: { name: "Gear Lever", label: "DOWN" }
+    - check: { name: "Aircraft Lighting", label: "OFF" }
+    - check: { name: "BATT 1 + 2", label: "ON" }
+    - check: { name: "OH Panel Brightness", label: "AS REQ" }
+    - check: { name: "Dome light", label: "AS REQ" }
+    - check: { name: "APU Master", label: "ON" }
+    - check: { name: "APU Start", label: "ON" }
+      tip: >-
+        The APU takes a while to start. Continue with the checks while waiting.
+    - check: { name: "Pilot PDF/MD Brightness", label: "AS REQ" }
+    - check: { name: "ECAM Displays Brightness", label: "AS REQ" }
+    - check: { name: "Co-Pilot PDF/MD Brightness", label: "AS REQ" }
+    - check: { name: "Autopilot/Panel Brightness", label: "AS REQ" }
+    - check: { name: "Console Floodlight", label: "AS REQ" }
+    - check: { name: "Self Loading Cargo", label: "CONFIGURED", id: slc-config }
+      requires: slc
+- name: "Pre-Boarding"
+  steps:
+    - check: { name: "Radio", label: "GRND FREQ" }
+      tip: Check <code>Comm</code> window for frequency
+    - check: { name: "Ramp/Jet Bridge", label: "REQUESTED" }
+      tip: >-
+        Doors cause an erroneous <code>Master Warn</code>. This can be ignored.
+        <br/>
+        Ramps disconnect automatically after a set time. If using SLC you may
+        need to re-request the ramp.
+    - check: { name: "Baggage", label: "REQUESTED" }
+    - check: { name: "Fuel Truck", label: "AS REQ" }
+      tip: >-
+        <code>ZFWCG</code> isn't shown in the <code>Fuel</code> window, hence
+        setting up fuel and passenger load pre-flight. If ZFWCG can be
+        calculated then fuel and passenger loads can be handled when this fuel
+        window appears.
+    - check: { name: "Radio", label: "ATIS" }
+      tip: Check <code>Comm</code> window for frequency
+    - input: { name: "Temp", id: oat }
+      comment: Not required for <code>TOGA</code>
+    - input: { name: "QNH", id: qnh }
+    - check: { name: "Altimeter", label: "SET" }
+    - delimiter: Wait for APU
+    - check: { name: "APU", label: "AVAIL" }
+    - check: { name: "APU BLEED", label: "ON" }
+      comment: >-
+        Set <code>GRND PWR</code>, an <code>APU</code> bug means it won't power
+        the aircraft.
+    - check: { name: "No Smoking", label: "AUTO" }
+    - check: { name: "FMC", label: "ON" }
+    - check: { name: "Door", label: "OPEN" }
+    - check: { name: "Boarding", label: "STARTED" }
+      tip: >-
+        A jet bridge or ramp needs to be connected for SLC to register the door
+        being open. Use instant boarding if there is a problem.
+      requires: slc
+- name: "FMC"
+  steps:
+    - delimiter: "INIT A"
+    - check: { name: "FROM/TO", label: "SET", id: to-from }
+    - check: { name: "FLT NBR", label: "SET", id: flight-number }
+    - check: { name: "COST INDEX", label: "SET" }
+      tip: >-
+        <code>COST INDEX</code> accepts <code>1-300</code>,
+        standard is <code>30</code>.
+    - check: { name: "CRZ FL/TEMP", "SET", id: crz }
+      tip: >-
+        Temperature should be set automatically, but can be worked out as
+        roughly <code>-10C</code> per <code>5000ft<code>.
+    - check: { name: "TROPO", label: "REVIEW" }
+    - delimiter: "F-PLAN"
+    - check: { name: "Departure", label: "SET", id: runway }
+    - input: { name: "CRS", id: crs }
+      comment: Obtained from the departure information
+    - check: { name: "Runway Length", label: "CHECKED" }
+      comment: <code>2090m</code> at sea level. Adjust upwards as required.
+    - check: { name: "Route", label: "SET", id: route }
+    - delimiter: "INIT B"
+    - check: { name: "ZFWCG/ZFW", label: "SET", id: cog }
+      tip: >-
+        Default ZFWCG is 25, but 30 may be a better value if one hasn't been
+        calculated.<hr/>
+        ZFW can be calculated at
+        <code>(44,330 + (PAX * 105) + Cargo)/1000</code> to 1 decimal place.
+    - check: { name: "BLOCK", label: "SET", id block }
+      tip: Check units. Value is in metrics tonnes.
+    - delimiter: "PERF"
+    - ceck: { name: "THR RED/ACC", label: "REVIEW" }
+      tip: >-
+        Typically 1500/1500. <code>THR RED</code> is where thrust is moved to
+        to <code>CLB</code>. <code>ACC</code> may be higher when noise abatement
+        procedures are in place.
+    - check: { name: "TO SHIFT", label: "REVIEW" }
+      tip: >-
+        Used if a portion of the runway isn't available. The value is the usable
+        runway length. Make sure the units are correct.
+    - check: { name: "FLAPS/THS", label: "SET" }
+      tip: >-
+        <code>FLAPS</code> can be <code>0</code>, <code>1</code>,
+        <code>1+F</code>, <code>2</code>, <code>3</code> or <code>F</code>.
+        Generally <code>2/</code> is used.
+    - check: { name: "FLEX", label: "AS REQ", id: flex }
+      tip: >-
+        <code>FLEX</code> can be calculated using
+        <code>floor(ISA + ((elev/1000) × 1.98))</code>. It can be ignored if
+        <code>TOGA</code> is being used.
+    - check: { name: "ENG OUT ACC", label: "CHECK" }
+      comment: Needs to be greater than THR RED/ACC values.
+    - check: { name: "vSpeeds", label: "REVIEW" }
+    - check: { name: "PRESEL", label: "AS REQ" }
+      tip: >-
+        <code>PRESEL</code> is found on subsequent <code>PHASE</code> and allows
+        the entry of custom speeds for each phase of the flight.
+- name: "Before Taxi"
+  steps:
+    - check: { name: "Clearance", label: "GRANTED" }
+    - input: { name: "Departure RWY", id: rwy }
+    - input: { name: "Departure Alt", id: alt }
+    - input: { name: "Departure Freq", id: freq }
+    - input: { name: "Squawk", id: squawk }
+    - check: { name: "Departure", label: "REVIEW", id: departure }
+    - check: { name: "Autopilot", label: "ALT SET", id: ap-alt }
+    - check: { name: "Autopilot", label: "CRS SET", id: ap-crs }
+    - check: { name: "Transponder", label: "SET", id: transponder }
+    - delimiter: Boarding Complete
+      requires: slc
+    - check: { name: "Doors", label: "CLOSED" }
+      tip: If using SLC make sure the doors are closed here too
+    - check: { name: "Strobe Light", label: "AUTO" }
+    - check: { name: "Beacon", label: "ON" }
+    - check: { name: "Nav Lights", label: "ON" }
+    - check: { name: "Runway Turn Lights", label: "ON" }
+    - check: { name: "Nose Lights", label: "TAXI" }
+    - check: { name: "Seatbelt Indicator", label: "ON" }
+      comment: Need to replicate in SLC too
+    - check: { name: "Fuel Pumps", label: "ON" }
+    - check: { name: "Avionics", label: "READY" }
+    - check: { name: "Terrain", label: "AS REQ" }
+    - check: { name: "Flight Director", label: "ON" }
+    - check: { name: "Autopilot", label: "SET + OFF" }
+    - check: { name: "Auto-throttle", label: "ARMED" }
+    - check: { name: "Auto-brake", label: "MAX" }
+- name: "Startup"
+  steps:
+    - check: { name: "Thrust Levers", label: "IDLE" }
+    - check: { name: "Outside area", label: "CLEAR" }
+    - check: { name: "Taxi Clearance", label: "GRANTED" }
+    - input: { name: "Tower", id: tower }
+    - check: { name: "Pushback", label: "REQUESTED" }
+      comment: Pushback directions are <em>your</em> left/right.
+      tip: Engine startup happens during pushback.
+    - check: { name: "Parking Brake", label: "RELEASED" }
+      tip: >-
+        The pushback vehicle will give the aircraft a shove when it has
+        connected. Turn the Parking brakes off when this happens and proceed
+        with engine startup.
+    - check: { name: "Engine Mode Selector", label: "IGN/START" }
+    - check: { name: "Outboard Engine", label: "START" }
+      comment: Wait for <code>N1=20%</code>
+    - check: { name: "Inboard Engine", label: "START" }
+      comment: Wait for <code>N1=20%</code>
+    - check: { name: "APU Bleed", "OFF" }
+    - check: { name: "APU Master", "OFF" }
+      comment: Check <code>GRND PWR</code> is <code>OFF</code> too
+    - check: { name: "Overhead Panel", "NO LIGHTS" }
+- name: "Taxi"
+  steps:
+    - check: { name: "Brakes", label: "RELEASED"}
+    - delimiter: Taxi to assigned runway
+    - check: { name: "Crew", label: "SEATED"}
+    - delimiter: At runway threshold
+    - check: { name: "Flaps", label: "SET"}
+      comment: Must match what was set in the <code>FMC</code>
+    - check: { name: "Spoilers", label: "RETRACTED" }
+    - check: { name: "Landing Lights", label: "ON"}
+    - check: { name: "Dome Light", label: "OFF/DIM" }
+      tip: >-
+        Type guidance for the A320 states dome light to <code>DIM</code> in poor
+        lighting conditions.
+    - check: { name: "Console Floodlight", label: "OFF" }
+    - check: { name: "Radio", label: "TOWER", id: radio }
+    - check: { name: "Radio Standby", label: "DEPARTURE", id: standby}
+    - check: {name: "Takeoff Clearance", label: "GRANTED"}
+- name: "Takeoff"
+  steps:
+    - check: {name: "Brakes", label: "SET"}
+    - memo: >-
+        Thrust <code>40% N1</code>, followed by <code>FLEX/MCT</code> or
+        <code>TOGA</code>. <br/>
+        Release brakes. <br/>
+        At <code>Vr</code> pitch <code>10-15deg</code>. <br>
+        Positive Climb Rate touch brakes.
+    - delimiter: Positive Rate
+    - check: { name: "Gear", label: "RETRACT"}
+    - delimiter: 180 KIAS
+    - check: { name: "FLAPS 1", label: "SET"}
+    - delimiter: 210 KIAS
+    - check: { name: "FLAPS", label: "RETRACTED"}
+    - check: { name: "Auto-throttle", label: "SET"}
+    - check: { name: "Autopilot", label: "SET"}
+    - check: { name: "Auto-brake", label: "OFF"}
+    - check: { name: "Note Lights", label: "OFF"}
+    - check: { name: "Landing Lights", label: "OFF"}
+      comment: <code>OFF</code> and <code>RETRACTED</code>
+    - check: {name: "Runway Turn Lights", label: "OFF"}
+    - delimiter: 1000ft or AS REQ
+    - check: {name: "Seatbelts Indicator", label: "OFF"}
+- name: Cruise
+  steps:
+    - delimiter: FL180
+    - check: {name: Altimiter, label: "STD"}

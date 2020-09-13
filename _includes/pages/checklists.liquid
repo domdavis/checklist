@@ -1,0 +1,31 @@
+{% assign checklist = site.data[page.checklist] %}
+
+<div class="row m-0">
+  <div class="col-2 bg-light border-right">
+    <div class="nav flex-column nav-pills pt-3 pb-3" role="tablist">
+      {% for phase in checklist %}
+        <a class="nav-link{% if forloop.first %} active{% endif %}"
+           data-toggle="list" role="tab"
+           href="#{{ phase.name | downcase | replace: " ", "-" }}"
+           >{{ phase.name }}</a>
+      {% endfor %}
+      <hr>
+      <a class="nav-link" href="/" role="tab">Reset</a>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="tab-content">
+      {% for phase in checklist %}
+        <div class="tab-pane {% if forloop.first %} active{% endif %}"
+             id="{{ phase.name | downcase | replace: " ", "-" }}"
+             role="tabpanel">
+          {% include components/delimiter.liquid text="START OF SECTION" %}
+          {% include components/checklist.liquid steps=phase.steps %}
+          {% include components/delimiter.liquid text="END OF SECTION" %}
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

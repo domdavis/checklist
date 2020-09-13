@@ -1,0 +1,13 @@
+{%  comment %}
+Requires name, check and optional id, notes, tip and comment
+{% endcomment %}
+<div class="row p-0 m-0 align-items-center">
+  <div class="col-4">
+    &nbsp;{{ include.name }}
+  </div>
+  <div class="col-2 text-center">
+    {% include components/toggle.liquid check=include.check id=include.id %}
+  </div>
+  {% include fragments/comments.liquid notes=include.notes tip=include.tip
+      comment=include.comment id=include.id %}
+</div>

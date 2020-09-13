@@ -1,0 +1,19 @@
+<div class="col pl-1 border-left border-secondary pt-2 pb-2">
+  {% if include.tip %}
+    <a class="fas fa-question-circle text-primary" tabindex="0" role="button"
+       data-container="body" data-toggle="popover" data-trigger="hover"
+       data-placement="right" data-html="true"
+       title="Tip" data-content="{{ include.tip }}"></a>
+  {% elsif include.comment %}
+    <i class="fas fa-info-circle text-secondary"
+       {% if include.id %}id="{{ include.id }}-icon"{% endif %}></i>
+  {% else %}
+    <i class="fas fa-info-circle text-white"
+       {% if include.id %}id="{{ include.id }}-icon"{% endif %}></i>
+  {% endif %}
+    <small class="align-text-top"
+           {% if include.id %}id="{{ include.id }}-comment"{% endif %}>
+        {{ include.comment | default: "&nbsp;" }}
+    </small>
+</div>
+
