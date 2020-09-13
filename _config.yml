@@ -3,7 +3,7 @@ description: >-
   An A320neo checklist for MSFS 2020 for use with SimBrief and Self Loading
   Cargo.
 author: Dom Davis
-root: /config
+root: /checklist
 exclude:
   - README.md
   - LICENSE
