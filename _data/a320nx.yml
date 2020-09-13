@@ -135,7 +135,7 @@
         <code>floor(ISA + ((elev/1000) × 1.98))</code>. It can be ignored if
         <code>TOGA</code> is being used.
     - check: { name: "ENG OUT ACC", label: "CHECK" }
-      comment: Needs to be greater than THR RED/ACC values.
+      comment: Needs to be greater than <code>THR RED/ACC</code> values.
     - check: { name: "vSpeeds", label: "REVIEW" }
     - check: { name: "PRESEL", label: "AS REQ" }
       tip: >-
