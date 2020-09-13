@@ -40,6 +40,7 @@ $(function() {
       hint('flight-plan', join('Loaded flight plan for ',
         briefing.string('origin', 'icao_code'), '/',
         briefing.string('destination', 'icao_code')))
+      $('#flight-plan').bootstrapToggle('on')
       update()
     }).fail(function() {
       error('flight-plan', 'Failed to load flight plan!')
